@@ -4,4 +4,4 @@ pandas
 pydeck
 streamlit
 sqlalchemy
-psycopg2
+psycopg2-binary
