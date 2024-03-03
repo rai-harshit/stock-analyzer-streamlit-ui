@@ -17,6 +17,8 @@ from streamlit.logger import get_logger
 import pandas as pd
 from sqlalchemy import create_engine
 import altair as alt
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 LOGGER = get_logger(__name__)
 
@@ -109,6 +111,21 @@ def run():
     chart = chart.properties(title='IRCTC vs LIC vs NIFTY50BEES - Daily Percentage Change')
 
     st.altair_chart(chart, use_container_width=True)
+
+    correlation_df = pd.DataFrame({
+        'IRCTC': df_irctc['pct_change'],
+        'LIC': df_lic['pct_change'],
+        'NIFTY': df_nifty['pct_change']
+    })
+
+    # Calculate correlation matrix
+    correlation_matrix = correlation_df.corr()
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+
+    # Plot correlation matrix heatmap
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
+    st.pyplot()
 
 
 if __name__ == "__main__":
