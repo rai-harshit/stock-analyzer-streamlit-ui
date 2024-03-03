@@ -42,7 +42,7 @@ def run():
     st.markdown(
         """
         The Stock Analyzer is a simple dashboard that contains some interesting trends and
-        comparisons between two tickers- NIFTYBEES.BSE and IRCTC.BSE.
+        comparisons between two tickers- NIFTYBEES.BSE, LICI.BSE, and IRCTC.BSE.
         This tool does not contain any complex analysis. It is a simple frontend created
         while learning Airflow, an orchestration tool, that is used to run ETL pipelines in a
         scheduled manner.
