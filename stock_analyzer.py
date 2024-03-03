@@ -80,7 +80,7 @@ def run():
     tooltip=['date', 'close'] 
     ).interactive()
 
-    chart_nifty = chart_nifty.properties(title='NIFTYBEES since IPO')
+    chart_nifty = chart_nifty.properties(title='NIFTYBEES since October 2019')
     st.altair_chart(chart_nifty, use_container_width=True)
 
     # Create a single chart with both lines
