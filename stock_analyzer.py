@@ -50,18 +50,36 @@ def run():
     with st.spinner("Fetching latest data for you..."):
       df_irctc = fetch_data(TABLE_NAME, 'IRCTC.BSE')
       df_nifty = fetch_data(TABLE_NAME, 'NIFTYBEES.BSE')
+      df_lic = fetch_data(TABLE_NAME, 'LICI.BSE')
 
-    combined_df = pd.concat([df_irctc, df_nifty], ignore_index=True)
+    combined_df = pd.concat([df_irctc, df_nifty, df_lic], ignore_index=True)
 
-    chart = alt.Chart(combined_df[combined_df["ticker"]=="IRCTC.BSE"]).mark_line().encode(
+    chart_irctc = alt.Chart(combined_df[combined_df["ticker"]=="IRCTC.BSE"]).mark_line().encode(
     x='date',
     y='close',
     tooltip=['date', 'close'] 
     ).interactive()
 
-    chart = chart.properties(title='IRCTC since IPO')
+    chart_irctc = chart_irctc.properties(title='IRCTC since IPO')
+    st.altair_chart(chart_irctc, use_container_width=True)
 
-    st.altair_chart(chart, use_container_width=True)
+    chart_lic = alt.Chart(combined_df[combined_df["ticker"]=="LICI.BSE"]).mark_line().encode(
+    x='date',
+    y='close',
+    tooltip=['date', 'close'] 
+    ).interactive()
+
+    chart_lic = chart_lic.properties(title='LIC since IPO')
+    st.altair_chart(chart_lic, use_container_width=True)
+
+    chart_nifty = alt.Chart(combined_df[combined_df["ticker"]=="NIFTYBEES.BSE"]).mark_line().encode(
+    x='date',
+    y='close',
+    tooltip=['date', 'close'] 
+    ).interactive()
+
+    chart_nifty = chart_nifty.properties(title='NIFTYBEES since IPO')
+    st.altair_chart(chart_nifty, use_container_width=True)
     
     chart = alt.Chart(combined_df).mark_line().encode(
     x='date',
@@ -70,7 +88,7 @@ def run():
     tooltip=['date', 'pct_change', 'ticker'] 
     ).interactive()
 
-    chart = chart.properties(title='IRCTC vs NIFTY50BEES - Daily Percentage Change')
+    chart = chart.properties(title='IRCTC vs LIC vs NIFTY50BEES - Daily Percentage Change')
 
     st.altair_chart(chart, use_container_width=True)
 
