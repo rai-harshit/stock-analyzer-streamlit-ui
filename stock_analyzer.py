@@ -80,6 +80,24 @@ def run():
 
     chart_nifty = chart_nifty.properties(title='NIFTYBEES since IPO')
     st.altair_chart(chart_nifty, use_container_width=True)
+
+    # Create a single chart with both lines
+    combined_chart = alt.Chart(combined_df[combined_df["ticker"] != "NIFTYBEES.BSE"]).mark_line().encode(
+        x='date',
+        y='close',
+        color='ticker:N'  # Use ticker as a color encoding to differentiate lines
+    ).interactive()
+
+    # Add customizations (optional)
+    combined_chart = combined_chart.properties(
+        title='IRCTC vs LIC Performance'  # Combined title
+    ).configure_axis(
+        labelFontSize=12,  # Adjust label font size
+        titleFontSize=14  # Adjust title font size
+    )
+
+    # Display the combined chart
+    st.altair_chart(combined_chart, use_container_width=True)
     
     chart = alt.Chart(combined_df).mark_line().encode(
     x='date',
