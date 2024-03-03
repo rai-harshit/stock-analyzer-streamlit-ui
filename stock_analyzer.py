@@ -21,12 +21,11 @@ import altair as alt
 LOGGER = get_logger(__name__)
 
 DATABASE_URL = st.secrets["DATABASE_URL"]
-TABLE_NAME_IRCTC = "irctc_stock_data"
-TABLE_NAME_BSE = "bse_stock_data"
+TABLE_NAME = "stock_data"
 
-def fetch_data(table_name):
+def fetch_data(table_name, ticker):
     engine = create_engine(DATABASE_URL)
-    df = pd.read_sql_query(f"SELECT * FROM {table_name} where date > '2019-07-31'", engine)
+    df = pd.read_sql_query(f"SELECT * FROM {table_name} where date > '2019-07-31' and ticker = '{ticker}'", engine)
     return df
 
 
@@ -41,8 +40,7 @@ def run():
     st.markdown(
         """
         The Stock Analyzer is a simple dashboard that contains some interesting trends and
-        comparisons between two tickers- Bombay Stock Exchange (BSE) and Indian Railway 
-        Catering and Tourism Corporation (IRCTC).
+        comparisons between two tickers- NIFTYBEES.BSE and IRCTC.BSE.
         This tool does not contain any complex analysis. It is a simple frontend created
         while learning Airflow, an orchestration tool, that is used to run ETL pipelines in a
         scheduled manner.
@@ -50,33 +48,29 @@ def run():
     )
 
     with st.spinner("Fetching latest data for you..."):
-      df_irctc = fetch_data(TABLE_NAME_IRCTC)
-      df_irctc["ticker"] = "IRCTC"
-      df_bse = fetch_data(TABLE_NAME_BSE)
-      df_bse["ticker"] = "BSE"
+      df_irctc = fetch_data(TABLE_NAME, 'IRCTC.BSE')
+      df_nifty = fetch_data(TABLE_NAME, 'NIFTYBEES.BSE')
 
-    combined_df = pd.concat([df_irctc, df_bse], ignore_index=True)
+    combined_df = pd.concat([df_irctc, df_nifty], ignore_index=True)
 
-    combined_df["perct_change"] = (combined_df["open"] - combined_df["close"]) / combined_df["open"]
-
-    chart = alt.Chart(combined_df[combined_df["ticker"]=="IRCTC"]).mark_line().encode(
+    chart = alt.Chart(combined_df[combined_df["ticker"]=="IRCTC.BSE"]).mark_line().encode(
     x='date',
     y='close',
     tooltip=['date', 'close'] 
     ).interactive()
 
-    chart = chart.properties(title='IRCTC Growth since IPO')
+    chart = chart.properties(title='IRCTC since IPO')
 
     st.altair_chart(chart, use_container_width=True)
     
     chart = alt.Chart(combined_df).mark_line().encode(
     x='date',
-    y='perct_change',
+    y='pct_change',
     color='ticker',
-    tooltip=['date', 'perct_change', 'ticker'] 
+    tooltip=['date', 'pct_change', 'ticker'] 
     ).interactive()
 
-    chart = chart.properties(title='IRCTC vs BSE- Daily Percentage Change')
+    chart = chart.properties(title='IRCTC vs NIFTY50BEES - Daily Percentage Change')
 
     st.altair_chart(chart, use_container_width=True)
 
