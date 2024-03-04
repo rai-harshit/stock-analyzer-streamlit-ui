@@ -42,7 +42,7 @@ def run():
     st.markdown(
         """
         The Stock Analyzer is a simple dashboard that contains some interesting trends and
-        comparisons between two tickers- NIFTYBEES.BSE, LICI.BSE, and IRCTC.BSE.
+        comparisons between two tickers- NIFTYBEES.BSE, LICI.BSE, and IRCTC.BSE.\n
         This tool does not contain any complex analysis. It is a simple frontend created
         while learning Airflow, an orchestration tool, that is used to run ETL pipelines in a
         scheduled manner.
@@ -126,6 +126,22 @@ def run():
     plt.figure(figsize=(10, 8))
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
     st.pyplot()
+
+    st.write("##### ETL Pipeline powered by Airflow")
+    st.markdown(
+        """
+        The ETL (Extract-Transform-Load) pipeline fetches data from the Alpha Vantage API,
+        converts the JSON response into CSV format, calculates delta between runs, adds
+        derived field to the data, and then ingests the resulting data into the PostgreSQL
+        database hosted on Aiven.io.\n
+        This ETL pipeline used Apache Airflow to run once every day to bring in the latest 
+        stock data from the API. The API sends all the historical data during each run. 
+        The Delta stage ensures that we are processing and ingesting the entire historical 
+        data every single time. This results in improved performance- both in terms of time 
+        and space.
+    """
+    )
+    st.image("img/etl-airflow.png")
 
 
 if __name__ == "__main__":
